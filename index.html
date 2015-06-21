@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blending normal distributions</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Blending normal distributions">
+  <meta name="author" content="Yasukazu IKAMI">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/slides" 
+    src="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Blending normal distributions</h1>
+    <h2></h2>
+    <p>Yasukazu IKAMI<br/>Coursera Student</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Summary</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In this presentaion, averge of two samples which are sampled from normal distribution with different parameters is calculated. Histogram of both input distribution and average distribution is dipicted. </p>
+
+<h2>Description</h2>
+
+<p>Two sample sets named <code>input1</code> and <code>input2</code>, with size <code>nsamp</code> are prepared. Parameter of <code>input1</code> and <code>input2</code> are their means and standard deviations. For <code>input1</code>, mean is <code>mu1</code>, standard deviation is <code>sd1</code>. Same rule is applied for <code>input2</code>.</p>
+
+<p>Each elements from two sample sets are averaged. And new sample set <code>average</code> is generated. Then, mean and standard deviation of average distribution is calculated.</p>
+
+<p>Number of sample <code>nsamp</code> is set to 10000. Parameter of <code>input1</code> is <code>mu1 = 0, sd1 = 1</code>. And for <code>input2</code>, they are <code>mu2 = 10, and sd2 = 2</code>. Seed is set to 111. </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Sampling and calculation</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">set.seed(111)
+library(reshape)
+library(ggplot2)
+
+nsamp &lt;- 10000 #number of each sample set
+mu1 &lt;- 0; sd1 &lt;- 1; mu2 &lt;- 10; sd2 &lt;- 2 #parameter of inputs
+
+input1 &lt;- rnorm(nsamp,mean=mu1,sd=sd1)
+input2 &lt;- rnorm(nsamp,mean=mu2,sd=sd2)
+average &lt;- (input1+input2)/2 #sampling and calculation of average
+
+mu3 &lt;- mean(average); sd3 &lt;- sd(average) #parameter of averaged sample sets
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Plotting histogram</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">df &lt;- melt(data.frame(input1,input2,average)) 
+</code></pre>
+
+<pre><code>## Using  as id variables
+</code></pre>
+
+<pre><code class="r">#conversion to dataframe for histogram with multiple distributions
+
+g &lt;- ggplot(df,aes(x=value,fill=variable))
+g &lt;- g + geom_histogram(alpha=0.5,position=&quot;identity&quot;)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Results</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Histogram of <code>input1</code> is plotted with red. For <code>input2</code>, it is green. <code>average</code> distribution is dipicted with blue histogram.</p>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-3"> 
+mu3 = 5, sd3 = 1.12</p>
+
+<p>It is indicated that averaged samples are normally distributed, with parameters \(average \sim N(\frac{mu1+mu2}{2},(\frac{sd1}{2})^2+(\frac{sd2}{2})^2)\).</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Summary'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Sampling and calculation'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Plotting histogram'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Results'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
